@@ -48,7 +48,7 @@ def topSort(graphRepre):
     if len(graphRepre[i]) == 1:
       deg0 += graphRepre[i]
   
-  # menghapus mata kuliah yang berderajat masuk 0 dalam graf
+  # masukkan ke hasil dan menghapus mata kuliah yang berderajat masuk 0 dalam graf
   if len(deg0) > 0:
     for j in range(len(deg0)):
       graphRepre.remove([deg0[j]])
@@ -58,11 +58,20 @@ def topSort(graphRepre):
           every.remove(deg0[j])
 
     theOrder.append(deg0)
+  else:
+    return None
 
-  # jika dalam 1 semester memiliki lebih dari satu mata kuliah yang tidak memiliki prerequisite
+  # rekursif sekaligus checker apakah DAG
   if (len(graphRepre) > 0):
-    nextOrder = topSort(graphRepre)
-    theOrder += nextOrder
+    if (len(deg0) != 0):
+      nextOrder = topSort(graphRepre)
+      if (nextOrder != None):
+        theOrder += nextOrder
+      else:
+        return None
+  
+  if (len(theOrder) > 8):
+    return None
   
   return theOrder
 
@@ -109,4 +118,8 @@ if __name__ == "__main__":
   graphRepre = graphInList(listFromFile, listOfNode)
   result = topSort(graphRepre)
 
-  printResult(result, listOfNode)
+  # masukan valid jika graf berupa DAG dan hasilnya tidak melebihi 8 semester(menurut QNA)
+  if (result == None):
+    print('Maaf, masukan tidak valid')
+  else:
+    printResult(result, listOfNode)

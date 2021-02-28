@@ -1,7 +1,13 @@
 # Tugas Kecil 2 IF2211 Strategi Algoritma
 
 ## Deskripsi Singkat
-Program untuk menyusun rencana kuliah dengan topological sort
+Program untuk menyusun rencana kuliah dengan topological sort. 
+Algoritma Topological Sort memiliki kaitan dengan pendekatan Decrease and
+Conquer. Dalam praktiknya algoritma ini membagi persoalan menjadi bagian yang lebih kecil
+namun kemudian hanya memproses satu sub-persoalan saja. Dalam hal ini memproses mata
+kuliah yang tidak memiliki/sudah terpenuhi prerequisite-nya. Hal ini selaras dengan konsep
+Decrease and Conquer yang membagi persoalan menjadi bagian lebih kecil dan memproses
+satu sub-persoalan saja.
 
 ## Requirement
 - python3
