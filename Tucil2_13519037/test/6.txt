@@ -1,0 +1,5 @@
+Haskell, Python.
+Python.
+C, Haskell.
+C++, C, Java.
+Java, Python, C.

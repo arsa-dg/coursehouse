@@ -1,125 +1,112 @@
+# load text dalam file
 def toGraph(filename):
   theString = []
   with open(filename,'r') as file:
     for line in file:
-      theString.append(line.replace(', ', ' ')
+      theString.append(line.replace(',',' ').replace(', ', ' ')
       .replace('.', '').replace('\n', ''));
 
   return theString
 
+# membuat list daftar mata kuliah yang ada (unik) menggunakan set 
 def nodeList(theList):
   theString = ''
   for i in theList:
     theString += i + ' '
   
   toSet = theString.split()
-  return list(set(toSet))
+  result = list(set(toSet))
 
+  result.sort()
+
+  return result
+
+# merepresentasikan graph berarah dalam bentuk list 2 dimensi. Dalam setiap list 
+# Index pertama sebagai Matakuliah, indeks berikutnya sebagai prerequisite dari mata kuliah tersebut
 def graphInList(theList, listOfNode):
   result = []
   for every in theList:
     tmpEvery = every.split()
-    if (len(tmpEvery) > 2):
-      for i in range(1,len(tmpEvery)):
-        for j in range(len(listOfNode)):
-          if tmpEvery[i] == listOfNode[j]:
-            node = j
-          if tmpEvery[0] == listOfNode[j]:
-            busur = j
-        result.append([node, busur])
+    tmp = []
+    for inside in tmpEvery:
+      for i in range(len(listOfNode)):
+        if inside == listOfNode[i]:
+          tmp.append(i)
 
-    else:
-      if (len(tmpEvery) == 2):
-        for k in range(len(listOfNode)):
-          if tmpEvery[1] == listOfNode[k]:
-            node = k
-          if tmpEvery[0] == listOfNode[k]:
-            busur = k
-      
-        result.append([node, busur])
-
-      else:
-        for l in range(len(listOfNode)):
-          if tmpEvery[0] == listOfNode[l]:
-            result.append([l])
-
-  result.sort()
-  return result
-
-# bener
-def nextisVisitedList(index, graphRepre):
-  result = []
-  for x in graphRepre:
-    if ((index == x[0]) and (len(x) == 2)):
-      result.append(x)
+    result.append(tmp)
 
   return result
 
-def DFSAlgorithm(i, isVisitedList, visitedNodes, graphRepre):
-  isVisitedList[i] = True
-
-  nextList = nextisVisitedList(i, graphRepre)
-  
-  for j in range(len(nextList)):
-    if isVisitedList[nextList[j][1]] == False:
-      DFSAlgorithm(nextList[j][1], isVisitedList, visitedNodes, graphRepre)
-
-  visitedNodes.append(i) 
-
-def topSort(isVisitedList, graphRepre):
+# pendekatan topological sort
+def topSort(graphRepre):
   theOrder = []
+  deg0 = []
+
+  # mencari mata kuliah yang memiliki derajat masuk 0 atau tidak memiliki prerequisite
+  # termasuk jika prerequisite sudah terpenuhi
+  for i in range(len(graphRepre)):
+    if len(graphRepre[i]) == 1:
+      deg0 += graphRepre[i]
   
-  for i in range(len(isVisitedList)):
-    if (isVisitedList[i] == False):
-      visitedNodes = []
-      DFSAlgorithm(i, isVisitedList, visitedNodes, graphRepre)
-      
-      for nodeId in visitedNodes:
-        theOrder.append(nodeId)
+  # menghapus mata kuliah yang berderajat masuk 0 dalam graf
+  if len(deg0) > 0:
+    for j in range(len(deg0)):
+      graphRepre.remove([deg0[j]])
+
+      for every in graphRepre:
+        if (len(every) > 1 and deg0[j] in every):
+          every.remove(deg0[j])
+
+    theOrder.append(deg0)
+
+  # jika dalam 1 semester memiliki lebih dari satu mata kuliah yang tidak memiliki prerequisite
+  if (len(graphRepre) > 0):
+    nextOrder = topSort(graphRepre)
+    theOrder += nextOrder
   
-  theOrder.reverse()
   return theOrder
 
+# mencetak hasil sort
 def printResult(resultList, listOfNode):
+  print("   ,-,--.   .=-.-.         ,-.--, ")
+  print(" ,-.'-  _\ /==/_ /.--.-.  /=/, .' ")
+  print("/==/_ ,_.'|==|, | \==\ -\/=/- /   ")
+  print("\==\  \   |==|  |  \==\ `-' ,/    ")
+  print(" \==\ -\  |==|- |   |==|,  - |    ")
+  print(" _\==\ ,\ |==| ,|  /==/   ,   \   ")
+  print("/==/\/ _ ||==|- | /==/, .--, - \  ")
+  print("\==\ - , //==/. / \==\- \/=/ , /  ")
+  print(" `--`---' `--`-`   `--`-'  `--`   ")
+
+  print()
+
   for i in range(len(resultList)):
-    print('Semester {}: {}'.format(i+1, listOfNode[result[i]]))
+    print('Semester {}: '.format(i+1), end='')
+    for j in range(len(resultList[i])):
+      print('{}'.format(listOfNode[resultList[i][j]]), end='')
+      if (j != len(resultList[i])-1):
+        print(', ', end='')
+    print()
 
 
 #main program
-txtfile = input('Masukkan nama file yang terletak di folder /test/ (contoh: 1.txt) : ')
-source = 'test/'+txtfile
+if __name__ == "__main__":
+  txtfile = input('Masukkan nama file yang terletak di folder /test/ (contoh: 1.txt) : ')
+  source = 'test/'+txtfile
 
-try:
-  open(source)
-except:
-  source = '../test/'+txtfile
-try:
-  open(source)
-except:
-  source = 'Tucil2_13519037/test/'+txtfile
+  try:
+    open(source)
+  except:
+    source = '../test/'+txtfile
+  try:
+    open(source)
+  except:
+    source = 'Tucil2_13519037/test/'+txtfile
 
-listFromFile = toGraph(source)
-listOfNode = nodeList(listFromFile)
-isVisitedList = [False for x in range(len(listOfNode))]
-graphRepre = graphInList(listFromFile, listOfNode)
-result = topSort(isVisitedList, graphRepre)
+  listFromFile = toGraph(source)
+  listOfNode = nodeList(listFromFile)
 
-# print(listFromFile)
+  graphRepre = graphInList(listFromFile, listOfNode)
+  result = topSort(graphRepre)
 
-# print('listofnode')
-
-# print(listOfNode)
-
-# print('isVisitedList')
-
-# print(isVisitedList)
-
-# print('directed graph representation in list')
-
-# print(graphRepre)
-
-
-# print('hasil')
-
-print(result)
-printResult(result, listOfNode)
+  printResult(result, listOfNode)

@@ -1,0 +1,8 @@
+-Nya, Testcase, Saya, Sudah, Bingung.
+Maaf.
+Saya, Maaf.
+sipPas8, -Nya, Bingung, Bikin.
+Sudah, Saya.
+Bingung, Sudah, Saya, Maaf.
+Bikin, Bingung, Saya.
+Testcase, Bikin, Bingung, Maaf.
